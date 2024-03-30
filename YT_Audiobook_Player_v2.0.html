@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="Youtube AudioBook Player" content="Single Page Offline App" />
+    <meta name="keywords" content="HTML, CSS, JavaScript" />
+    <meta name="Unknown" content="N/A" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+
+      body {
+        box-sizing: border-box;
+        background-color: rgb(57, 58, 58);
+        font-family: Quicksand;
+        margin: 0;
+        /* overflow: hidden; */
+      }
+      /*----------------------------------*/
+      .buttons,.fullscreen_button {
+        position: relative;
+        margin: 2em;
+        /*  margin: 0 auto 20px auto; */
+        padding: 20px;
+        float: left;
+        display: block;
+        background-color: #eee;
+        border-radius: 4px;
+      }
+      .buttons:after {
+        top: 100%;
+        left: 50%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-color: rgba(238, 238, 238, 0);
+        border-top-color: #eee;
+        border-width: 10px;
+        margin-left: -10px;
+      }
+      /*----------------------------------*/
+      .button {
+        padding: 10px 20px;
+        font-weight: bold;
+        letter-spacing: 5px;
+        outline: none;
+        cursor: pointer;
+        color: white;
+        background-color: #7f8c8d;
+        border: none;
+        border-radius: 4px;
+      }
+      /*----------------------------------*/
+      #play-button {
+        background-color: #2ecc71;
+      }
+      #play-button:hover {
+        background-color: #27ae60;
+      }
+      /*----------------------------------*/
+      #pause-button {
+        background-color: #e67e22;
+      }
+      #pause-button:hover {
+        background-color: #d35400;
+      }
+      /*----------------------------------*/
+      #stop-button {
+        background-color: #e74c3c;
+      }
+      #stop-button:hover {
+        background-color: #c0392b;
+      }
+      /*----------------------------------*/
+      #pause-button,
+      #stop-button {
+        margin-left: 15px;
+      }
+      /*----------------------------------*/
+      iframe {
+        margin: 2em auto;
+        width: 560px;
+        height: 315px;
+        float: left;
+        clear: both;
+        display: block;
+        background-color: #eee;
+      }
+      /*----------------------------------*/
+      #player,
+      .parent_div {
+        display: block;
+        width: 70%;
+        margin: 2em;
+        margin-top:0.25em;
+        flex-direction: row;
+        align-content: space-around;
+        justify-content: start;
+        align-items: center;
+      }
+      #url_input,
+      #url_button {
+        margin: 0.5em;
+        margin-left: 2.5em;
+        margin-top: 0;
+        padding: 0.5em;
+        border-radius: 0.75em;
+        border-style: solid;
+        border-color: #32ac71;
+        border-width: 0.25em;
+      }
+      #url_input {
+        width:50%;
+        margin-right: 0;
+      }
+      #url_button {
+        margin-left: 0.25em;
+      }
+      /*----------------------------------*/
+      .choose_file {
+            /*margin: 1em;*/
+            margin: 0;
+            margin-left: 2em;
+            color: hsl(180, 100%, 97%);
+          }
+      .choose_file > * {
+        padding: 0.5em;
+        margin: 0.5em;
+        margin-left: 0;
+      }
+      /*----------------------------------*/
+      .speed_button_div,
+      .jump_button_div {
+        display: flex;
+        width: 85%;
+        flex-wrap: wrap;
+        /* gap: 2em; */
+        margin: 2em;
+        margin-top: 0;
+        margin-bottom: 0;
+        flex-direction: row;
+        align-content: space-around;
+        justify-content: start;
+        align-items: center;
+      }
+      .speed_button_div > *,
+      .jump_button_div > * {
+        padding: 0.5em;
+        /* margin: 0.5em; */
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        margin-left: 0.25em;
+        margin-right: 0.25em;
+        min-width: 5em;
+        /* border-color: #32AC71; */
+        border-radius: 0.75em;
+        border-style: solid;
+        border-color: #32ac71;
+        border-width: 0.25em;
+        transition: all 0.2s ease-out;
+      }
+      /*----------------------------------*/
+      .speed_button:hover {
+        cursor: pointer;
+
+        background-color: #0b552b;
+        /* color: aliceblue; */
+        color: aliceblue;
+        font-weight: 700;
+        transform: scale(1.05);
+      }
+      .choose_button:hover {
+        transform: scale(1.05);
+      }
+      /*----------------------------------*/
+      .fullscreen_button {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            padding: 0.5em;
+            margin: 0.5em;
+            /*min-width: 10em;*/
+            border-radius: 0.75em;
+            border-style: solid;
+            border-color: #32ac71;
+            border-width: 0.25em;
+          }
+      .fullscreen_button:hover {
+        cursor: pointer;
+        background-color: #0b552b;
+        /* color: aliceblue; */
+        color: aliceblue;
+        font-weight: 700;
+        transform: scale(1.05);
+
+      }
+      /*----------------------------------*/
+      .BM_save,.BM_load {
+        top: 1em;
+        right: 1em;
+        padding: 0.5em;
+        margin: 0.5em;
+        min-width: 10em;
+        border-radius: 0.75em;
+        border-style: solid;
+        border-color: #32ac71;
+        border-width: 0.25em;
+      }
+      .BM_save:hover,.BM_load:hover {
+        cursor: pointer;
+        background-color: #0b552b;
+        /* color: aliceblue; */
+        color: aliceblue;
+        font-weight: 700;
+        transform: scale(1.05);
+      }
+      /*----------------------------------*/
+      .cont2 {
+        display: flex;
+        flex-wrap: wrap;
+        /* gap: 2em; */
+        margin: 2em;
+        margin-bottom: 0.25em;
+        margin-top: 0;
+        flex-direction: row;
+        align-content: space-around;
+        justify-content: flex-start;
+        align-items: center;
+        color: hsl(180, 100%, 97%);
+      }
+      .cont2 > * {
+        padding: 0.5em;
+        margin: 0.25em;
+      }
+      .BM_delete,
+      .BM_play,
+      .add_BM,
+      .play_from,
+      .choose_button,
+      .BM_save,
+      .BM_load,
+      .fullscreen_button {
+        margin-left: 0.2em;
+        min-width: 10em;
+        /* border-color: #32AC71; */
+        border-radius: 0.75em;
+        border-style: solid;
+        border-color: #32ac71;
+        border-width: 0.25em;
+        transition: all 0.1s;
+      }
+
+      .BM_delete:hover,
+      .BM_play:hover,
+      .speed_button:hover,
+      .choose_button:hover,
+      .add_BM:hover,
+      .play_from:hover,
+      .BM_save:hover,
+      .BM_load:hover,
+      .fullscreen_button:hover {
+
+        cursor: pointer;
+        background-color: #0b552b;
+        /* color: aliceblue; */
+        color: aliceblue;
+        font-weight: 700;
+        transform: scale(1.1);
+      }
+
+      
+      .BM_MainROW {
+        background-color: #aed580;
+        border-color: hsl(151, 55%, 44%);
+        border-bottom-width: 0.15em;
+        border-style: solid;
+        border-radius: 0.5em;
+        padding: 0.25em;
+        display: grid;
+        /* gap: 5px; */
+        /*grid-template-columns: 30% 1fr 1fr 1fr 1fr; --Old */
+        grid-template-columns: 50% 0.7fr 1fr 1fr 1fr;
+        align-items: center;
+        margin-bottom: 0.5em;
+        margin: 2em;
+        margin-top: 0.25em;
+        margin-bottom: 0.25em;
+      }
+      .BM_MainROW > * {
+        width: 100%;
+        /* padding:ch; */
+        padding-inline: 0.75em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        align-self: center;
+        box-sizing: border-box;
+      }
+      .BM_timestamp {
+        text-align: center;
+      }
+
+      .table1 {
+        display: grid;
+        margin-top: 0;
+      }
+
+      .BM_name,
+      .text_field {
+        border-radius: 0.75em;
+        border-style: solid;
+        border-color: #32ac71;
+        border-width: 0.25em;
+
+        /* border-width: 0;
+      border-radius: 0.3em; */
+        transition: 0.1s;
+      }
+      .BM_name:hover,
+      .BM_name:focus {
+        transform: translateX(5em) scale(1.3);
+        background-color: #0b552b;
+        border-style: solid;
+        color: aliceblue;
+        font-weight: 700;
+
+        /* color: rgb(139, 60, 60);
+      background-color: hsl(0, 0%, 79%); */
+      }
+      .BM_name:focus {
+        outline: 2em;
+
+        /* cursor: input; */
+      }
+      .BM_play, .BM_delete {
+        width: 50%;
+      }
+      
+
+
+    </style>
+  </head>
+  <body>
+
+    <button onclick="toggle_full_screen()" class="fullscreen_button">
+      FullScreen &#x26F6
+    </button>
+<!----------------------------------------------------------------------------->
+    <div id="parent_div">
+      <div id="player">Youtube Video</div>
+      <input type="text" id="url_input" placeholder="Enter YT url: " />
+      <button class="button" onclick="addInput()" id="url_button">
+        Start Video
+      </button>
+    </div>
+<!----------------------------------------------------------------------------->
+    <div class="choose_file">
+      <!-- <label class="text_field">Select Audiobook (.mp3/.m4a/.wav)</label>
+      <input
+        class="choose_button"
+        type="file"
+        id="audio-file"
+        accept="audio/*"
+      /> -->
+      
+    </div>
+<!----------------------------------------------------------------------------->
+
+    <div class="jump_button_div">
+        <!-- Added on 11th march 2024 v1.9-->
+        <button class="button" id="H-jump-back" name="HJB"></button>
+        <button class="button" id="L-jump-back" name="LJB"></button>
+        <button class="button" id="previous"></button>
+        <button class="button" id="next"></button>
+        <button class="button" id="L-jump-front"></button>
+        <button class="button" id="H-jump-front"></button>
+        
+        <!---
+        <button class="button" id="L-jump-back" name="LJB"></button>
+        <button class="button" id="previous"></button>
+        <button class="button" id="next"></button>
+        <button class="button" id="L-jump-front"></button>
+      -->
+    </div>
+<!----------------------------------------------------------------------------->
+    
+    <div class="speed_button_div">
+      <button class="button" id="play-button">&#9658 Play</button>
+      <button class="button" id="pause-button">&#x23F8 Pause</button>
+
+      <!-- Removed on 11th march 2024 v1.9
+      <button class="button" id="L-jump-back" name="LJB"></button>
+      <button class="button" id="previous"></button>     
+      <button class="button" id="next"></button>
+      <button class="button" id="L-jump-front"></button> 
+      -->
+
+
+      <button class="button" id="stop-button">&#x23F9 Stop</button>
+      <button onclick="save_Bookmarks_json()" class="BM_save">Save Bookmarks</button>
+      <!--  <input type="file" onclick="load_BM_Json_File()"  class="BM_load"/> -->
+      <input
+        type="file"
+        id="fileElem"
+        class="BM_load"
+        accept=".json,.JSON,.Json"
+        style="display: none"
+      />
+      <button id="fileSelect" class="BM_load" type="button">
+        Load BookMarks
+      </button>
+      <!---
+      <button
+        id="BM_display"
+        onclick="update_BM_Rows_Display()"
+        class="BM_load"
+        type="button"
+      >
+        Display BookMarks
+      </button> -->
+      
+      <div class="speed_button_div">
+        <button class="speed_button" id="speed_button">1.25x</button>
+        <button class="speed_button" id="speed_button2">1.3x</button>
+        <button class="speed_button" id="speed_button3">1.35x</button>
+        <button class="speed_button" id="speed_button4">1.4x</button>
+        <button class="speed_button" id="speed_button5">1.45x</button>
+        <button class="speed_button" id="speed_button6">1.5x</button>
+        <button class="speed_button" id="speed_button7">1.55x</button>
+        <button class="speed_button" id="speed_button8">1.6x</button>
+        <button class="speed_button" id="speed_button9">1.7x</button>
+        <button class="speed_button" id="speed_button10">1.8x</button>
+        <button class="speed_button" id="speed_button11">1.9x</button>
+        <button class="speed_button" id="speed_button12">2.0x</button>
+      </div> 
+    </div>
+
+<!----------------------------------------------------------------------------->
+    <div class="cont2">
+      <button class="play_from" onclick="playFrom()">Play from</button>
+      <input class="text_field" type="number" id="timeStamp" />
+
+      <button class="add_BM" onclick="add_Bookmark()">Add Bookmark</button>
+
+      <div>Timestamp:</div>
+      <input class="text_field" type="text" id="timepaused" />
+
+      <label id="current_speed"> Current Playback Rate: </label>
+    </div>
+<!----------------------------------------------------------------------------->
+
+    <!-- //Main BM Row Block -->
+    <div id="table1" class="table1">
+      <div class="BM_MainROW" id="BM_MainROW">
+        <!--input type="text" class="BM_name" value="NAME" /-->
+        <div class="BM_timestamp">BookMark Name</div>
+        <div class="BM_timestamp">Time Stamp</div>
+        <div class="BM_date">Time Created</div>
+        <!--
+        <div class="BM_timestamp">Play</div>
+        <div class="BM_date">Delete</div>
+        <button class="BM_play">Play</button>
+        <button class="BM_delete">Delete</button> -->
+      </div>
+    </div>
+<!----------------------------------------------------------------------------->
+    <!--
+    <div class="speed_button_div">
+      <button id="1.0x" class="speed_button" onclick="set_Speed()" speed="1.0">
+        1.00x
+      </button>
+      <button id="1.05x" class="speed_button" onclick="set_Speed()" speed="1.05">
+        1.05x
+      </button>
+      <button id="1.1x" class="speed_button" onclick="set_Speed()" speed="1.1">
+        1.10x
+      </button>
+      <button id="1.15x" class="speed_button" onclick="set_Speed()" speed="1.15">
+        1.15x
+      </button>
+      <button id="1.2x" class="speed_button" onclick="set_Speed()" speed="1.2">
+        1.20x
+      </button>
+      <button id="speed_button" class="speed_button" speed="1.25">
+        1.25x
+      </button>
+      <button id="1.3x" class="speed_button" onclick="set_Speed()" speed="1.3">
+        1.30x
+      </button>
+      <button id="1.35x" class="speed_button" onclick="set_Speed()" speed="1.35">
+        1.35x
+      </button>
+      <button id="1.4x" class="speed_button" onclick="set_Speed()" speed="1.4">
+        1.40x
+      </button>
+      <button id="1.45x" class="speed_button" onclick="set_Speed()" speed="1.45">
+        1.45x
+      </button>
+      <button id="speed_button" class="speed_button" speed="1.5">
+        1.50x
+      </button>
+      <button id="1.65x" class="speed_button" onclick="set_Speed()" speed="1.65">
+        1.65x
+      </button> 
+    </div>  -->
+
+    <script>
+    /*-----------------------------------------------------------------------------*/
+    
+      var player, currentVideoId = 0;
+      var url_link = "";
+      var result_url = "";
+      var videoIDs = [];
+      var tempo = 1.0;
+
+      // Added in V 1.7 --------------------------------------------
+      var small_Jump = 5;
+      var large_Jump = 10;
+      var huge_Jump = 30; //<!-- Added on 11th march 2024 v1.9-->
+      var jump_backlogo ="&#9194";
+      var jump_frontlogo ="&#9193";
+      var play_status = 0;
+
+      //Jump button text display--------------------------------------------
+      //-- Added on 11th march 2024 v1.9------------------------------------
+      var HJB = document.getElementById("H-jump-back");
+      HJB.innerHTML = jump_backlogo+" -"+huge_Jump+" Sec";
+      var LJB = document.getElementById("L-jump-back");
+      LJB.innerHTML = jump_backlogo+" -"+large_Jump+" Sec";
+      var SJB = document.getElementById("previous");
+      SJB.innerHTML = jump_backlogo+" -"+small_Jump+" Sec";
+      var SJF = document.getElementById("next");
+      SJF.innerHTML = "+"+small_Jump+" Sec "+jump_frontlogo;
+      var LJF = document.getElementById("L-jump-front");
+      LJF.innerHTML = "+"+large_Jump+" Sec "+jump_frontlogo;
+      var HJF = document.getElementById("H-jump-front");
+      HJF.innerHTML = "+"+huge_Jump+" Sec "+jump_frontlogo;
+      //----------------------------------------------------------------------
+      /* 
+      var LJB = document.getElementById("L-jump-back");
+      LJB.innerHTML = jump_backlogo+"-"+large_Jump+"S";
+      var SJB = document.getElementById("previous");
+      SJB.innerHTML = jump_backlogo+"-"+small_Jump+"S";
+      var SJF = document.getElementById("next");
+      SJF.innerHTML = "+"+small_Jump+"S"+jump_frontlogo;
+      var LJF = document.getElementById("L-jump-front");
+      LJF.innerHTML = "+"+large_Jump+"S"+jump_frontlogo; */
+      //-----------------------------------------------------------
+
+      //Declaring BM Object with Headers------------
+      var BM_objct = {
+        0: { name: "BM Name", TS: "TimeStamp", date: "Date" },
+      };
+      
+      var input_field = document.getElementById("url_input");
+      input_field.addEventListener("change",function(evt){
+        //console.log(evt.target.value);
+        og_link = evt.target.value;
+
+        //Added in v 1.7-------------------------------------------
+        if(og_link.indexOf("watch?v=")!=-1){
+          og_link= og_link.replace("watch?v=","");
+          console.log("og link is:",og_link);
+        }
+        
+        
+        if(og_link.indexOf("?feature=shared")!=-1){
+          og_link= og_link.replace("?feature=shared","");
+          console.log("og link is:",og_link);
+        }
+        url_link = og_link;
+        //---------------------------------------------------------
+
+        //var index = og_link.lastIndexOf("?");
+        //console.log(index);
+        //url_link = og_link.slice(0,index);
+        //console.log(url_link);
+
+        url_link = url_link.replace("youtube.com", "youtu.be");
+
+        //Added on 11th march 2024------------------------------------------------
+        url_link= removeRestOfStringAfterAmpersand(url_link);
+        url_link =removeRestOfStringfromsharedlink(url_link);
+        //------------------------------------------------------------------------
+
+        //To remove string part from '&' character to end of the string (useful to remove playlist info from the link) Added on 11th march 2024
+        function removeRestOfStringAfterAmpersand(inputString) {
+          let index = inputString.indexOf('&');
+          if (index !== -1) {
+              return inputString.slice(0, index);
+          }
+          return inputString;
+        }
+
+        //To remove string part from '?si' to end of the string (Useful to remove extra info from the link creted by share button on yt) Added on 11th march 2024
+        function removeRestOfStringfromsharedlink(inputString) {
+          let index = inputString.indexOf('?si');
+          if (index !== -1) {
+              return inputString.slice(0, index);
+          }
+          return inputString;
+        }
+
+
+        //console.log("url link is:",url_link);
+        //url_link = evt.target.value;
+        //console.log(evt.target.value);
+      });
+
+      var x = document.getElementById("player");
+      var y = document.getElementById("timepaused");
+      const fileSelect = document.getElementById("fileSelect");
+      const fileElem = document.getElementById("fileElem");
+      const BM_reader = new FileReader();
+/*-----------------------------------------------------------------------------------*/
+      fileSelect.addEventListener(
+        "click",
+        (evt) => {
+          if (fileElem) {
+            fileElem.click();
+            //console.log("inside:");
+          }
+          //console.log(evt.target.files[0]);
+        },
+        false
+      );
+/*-----------------------------------------------------------------------------------*/
+      fileElem.addEventListener("change", (e) => {
+        //console.log(e.target.files[0]);
+        var file = e.target.files[0];
+        BM_reader.addEventListener(
+          "load",
+          () => {
+            // this will then display a text file
+            //content.innerText = BM_reader.result;
+            BM_objct = JSON.parse(BM_reader.result);
+            //console.log(BM_objct);
+            update_BM_Rows_Display();
+          },
+          false
+        );
+
+        if (file) {
+          BM_reader.readAsText(file);
+        }
+        
+
+        /* BM_objct = JSON.parse(e.target.files[0]);
+        console.log(BM_objct); */
+      });
+/*-----------------------------------------------------------------------------------*/
+
+      function application_closing_prompt(e) {
+        if (!e) e = window.event;
+        //e.cancelBubble is supported by IE - this will kill the bubbling process.
+        e.cancelBubble = true;
+        e.returnValue = "You sure you want to leave?"; //This is displayed on the dialog
+
+        //e.stopPropagation works in Firefox.
+        if (e.stopPropagation) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      }
+      window.onbeforeunload = application_closing_prompt;
+/*-----------------------------------------------------------------------------------*/
+      
+      function toggle_full_screen() {
+        if (
+          (document.fullScreenElement && document.fullScreenElement !== null) ||
+          (!document.mozFullScreen && !document.webkitIsFullScreen)
+        ) {
+          if (document.documentElement.requestFullScreen) {
+            document.documentElement.requestFullScreen();
+          } else if (document.documentElement.mozRequestFullScreen) {
+            /* Firefox */
+            document.documentElement.mozRequestFullScreen();
+          } else if (document.documentElement.webkitRequestFullScreen) {
+            /* Chrome, Safari & Opera */
+            document.documentElement.webkitRequestFullScreen(
+              Element.ALLOW_KEYBOARD_INPUT
+            );
+          } else if (document.msRequestFullscreen) {
+            /* IE/Edge */
+            document.documentElement.msRequestFullscreen();
+          }
+        } else {
+          if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+          } else if (document.mozCancelFullScreen) {
+            /* Firefox */
+            document.mozCancelFullScreen();
+          } else if (document.webkitCancelFullScreen) {
+            /* Chrome, Safari and Opera */
+            document.webkitCancelFullScreen();
+          } else if (document.msExitFullscreen) {
+            /* IE/Edge */
+            document.msExitFullscreen();
+          }
+        }
+      }
+/*-----------------------------------------------------------------------------------*/
+
+      function addInput() {
+        
+        var old_player_div = document.getElementById("player");
+        //Remove old Player div to start new video
+        old_player_div.remove();
+
+        var new_player_div = document.createElement("div");
+        //console.log(newplayer);
+        new_player_div.setAttribute("id", "player");
+        url_text_element = document.getElementById("url_input");
+        var parent_element = document.getElementById("parent_div");
+        parent_element.insertBefore(new_player_div, url_text_element);
+        //var player = 0;
+
+        //url_link = document.getElementById("url_input").value; //updated in v1.7
+
+        //console.log("User Entered Link:  " + url_link);
+        //console.log("Url_Link is: " + url_link);
+        result_url = url_link.split("/");
+        //console.log("Result url: " + result_url);
+        //console.log(result_url[result_url.length - 1]);
+        final_url = result_url[result_url.length - 1];
+        //final_url=url_link;
+        //console.log("VideoId for YT Api:  " + final_url);
+        //console.log("FInal Link:  " + final_url);
+        videoIDs = [`${final_url}`];
+        //console.log(videoIDs);
+        document.getElementById("url_input").value = "";
+        var tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/player_api";
+        var firstScriptTag = document.getElementsByTagName("script")[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        onYouTubeIframeAPIReady();
+        
+      }
+/*-----------------------------------------------------------------------------------*/
+
+      function onYouTubeIframeAPIReady() {
+          player = new YT.Player("player", {
+            width: "50%",
+            playerVars: {
+              controls: 1,
+              showinfo: 0,
+              rel: 0,
+              showsearch: 0,
+              iv_load_policy: 3,
+            },
+            events: {
+              onReady: onPlayerReady,
+              onStateChange: onPlayerStateChange,
+            },
+          });
+        }
+/*-----------------------------------------------------------------------------------*/
+      //onYouTubeIframeAPIReady();       
+      /*function set_Speed() {
+          let active_speed_Button = document.activeElement;
+          console.log(active_speed_Button);
+          let active_speed = active_speed_Button.getAttribute("speed");
+          console.log("the speed is:  " + active_speed);
+          console.log(player);
+          tempo = active_speed;
+          
+            console.log(active_speed);
+            player.setPlaybackRate(active_speed);
+            set_tempo(active_speed); 
+            console.log(player.getCurrentTime());
+          
+          let speed_label = document.getElementById("current_speed");
+          speed_label.innerHTML = "Current Playbck Rate:  " + active_speed; 
+        }  */
+        
+/*-----------------------------------------------------------------------------------*/
+      function onPlayerReady(event) {
+        event.target.loadVideoById(videoIDs[currentVideoId]);
+
+        // bind events
+        var playButton = document.getElementById("play-button");
+        playButton.addEventListener("click", function () {
+          player.playVideo();
+          play_status =1;
+        });
+
+        var pauseButton = document.getElementById("pause-button");
+        pauseButton.addEventListener("click", function () {
+          player.pauseVideo();
+          play_status=0;
+        });
+
+        var stopButton = document.getElementById("stop-button");
+        stopButton.addEventListener("click", function () {
+          player.stopVideo();
+          play_status=0;
+        });
+
+//------Time Jump Buttons working code. Added on 11th march 2024 v1.9-------------
+        var hjb = document.getElementById("H-jump-back");
+        hjb.addEventListener("click", function () {
+          //player.previousVideo();
+          console.log(player.getCurrentTime());
+          var current_playtime =player.getCurrentTime();
+          player.seekTo(current_playtime - huge_Jump,true);
+          player.playVideo();
+          play_status=1;
+        });
+
+        var ljb = document.getElementById("L-jump-back");
+        ljb.addEventListener("click", function () {
+          //player.previousVideo();
+          console.log(player.getCurrentTime());
+          var current_playtime =player.getCurrentTime();
+          player.seekTo(current_playtime - large_Jump,true);
+          player.playVideo();
+          play_status=1;
+        });
+
+        var pre = document.getElementById("previous");
+        pre.addEventListener("click", function () {
+          //player.previousVideo();
+          console.log(player.getCurrentTime());
+          var current_playtime =player.getCurrentTime();
+          player.seekTo(current_playtime-small_Jump,true);
+          player.playVideo();
+          play_status=1;
+        });
+
+        var next = document.getElementById("next");
+        next.addEventListener("click", function () {
+          //player.nextVideo();
+          console.log(player.getCurrentTime());
+          var current_playtime =player.getCurrentTime();
+          player.seekTo(current_playtime+small_Jump,true);
+          player.playVideo();
+          play_status=1;
+        });
+        var ljf = document.getElementById("L-jump-front");
+        ljf.addEventListener("click", function () {
+          //player.nextVideo();
+          console.log(player.getCurrentTime());
+          var current_playtime =player.getCurrentTime();
+          player.seekTo(current_playtime + large_Jump,true);
+          player.playVideo();
+          play_status=1;
+        });
+        var hjf = document.getElementById("H-jump-front");
+        hjf.addEventListener("click", function () {
+          //player.nextVideo();
+          console.log(player.getCurrentTime());
+          var current_playtime =player.getCurrentTime();
+          player.seekTo(current_playtime + huge_Jump,true);
+          player.playVideo();
+          play_status=1;
+        });
+//---------------------------------------------------------------------------------
+        //Code to use Space bar & arrow keys to play/pause & fastforward the audio
+        document.onkeydown = checkKey;
+        function checkKey(e) {
+          e = e || window.event;
+
+          if (e.keyCode == '37') {
+              // left arrow
+              var current_playtime =player.getCurrentTime();
+              player.seekTo(current_playtime - small_Jump,true);
+              player.playVideo();
+              play_status=1;
+          }
+          else if (e.keyCode == '39') {
+              // right arrow
+              var current_playtime =player.getCurrentTime();
+              player.seekTo(current_playtime + small_Jump,true);
+              player.playVideo();
+              play_status=1;
+          }
+          else if (e.keyCode == '32') {
+              // Space bar
+                if (play_status==0){
+                  e.preventDefault();
+                  player.playVideo();
+                  //console.log("playing");
+                  play_status=1;
+                }
+                else{
+                  e.preventDefault();
+                  player.pauseVideo();
+                  //console.log("paused");
+                  play_status=0;
+                }
+          }
+        }
+//---------------------------------------------------------------------------
+
+        
+
+        player.loadPlaylist({
+          playlist: videoIDs,
+        });
+
+        //change playback rate 
+        var speed = document.getElementById("speed_button");
+        speed.addEventListener("click", function () {
+          player.setPlaybackRate(1.25);
+          /*convert video play time in seconds to HH:MM:SS format
+          const timeinseconds = new Date(null);
+          timeinseconds.setSeconds(player.getCurrentTime()); // specify value for SECONDS here
+          const formatted_Timestamp = timeinseconds.toISOString().slice(11, 19); */
+          //console.log("the time is:" + formatted_Timestamp);
+          //player.seekTo(600, true);                 
+          //console.log(player.getCurrentTime());
+        });
+        var speed2 = document.getElementById("speed_button2");
+        speed2.addEventListener("click", function () {
+          player.setPlaybackRate(1.3);
+          //console.log(player.getCurrentTime());
+        });
+        var speed3 = document.getElementById("speed_button3");
+        speed3.addEventListener("click", function () {
+          player.setPlaybackRate(1.35);
+          //console.log(player.getCurrentTime());
+        });
+        var speed4 = document.getElementById("speed_button4");
+        speed4.addEventListener("click", function () {
+          player.setPlaybackRate(1.4);
+          //console.log(player.getCurrentTime());
+        });
+        var speed5 = document.getElementById("speed_button5");
+        speed5.addEventListener("click", function () {
+          player.setPlaybackRate(1.45);
+          //console.log(player.getCurrentTime());
+        });
+        var speed6 = document.getElementById("speed_button6");
+        speed6.addEventListener("click", function () {
+          player.setPlaybackRate(1.5);
+          //console.log(player.getCurrentTime());
+        });
+        var speed7 = document.getElementById("speed_button7");
+        speed7.addEventListener("click", function () {
+          player.setPlaybackRate(1.55);
+          //console.log(player.getCurrentTime());
+        });
+        var speed8 = document.getElementById("speed_button8");
+        speed8.addEventListener("click", function () {
+          player.setPlaybackRate(1.6);
+          //console.log(player.getCurrentTime());
+        });
+        var speed9 = document.getElementById("speed_button9");
+        speed9.addEventListener("click", function () {
+          player.setPlaybackRate(1.7);
+          //console.log(player.getCurrentTime());
+        });
+        var speed10 = document.getElementById("speed_button10");
+        speed10.addEventListener("click", function () {
+          player.setPlaybackRate(1.8);
+          //console.log(player.getCurrentTime());
+        });
+        var speed11 = document.getElementById("speed_button11");
+        speed11.addEventListener("click", function () {
+          player.setPlaybackRate(1.9);
+          //console.log(player.getCurrentTime());
+        });
+        var speed12 = document.getElementById("speed_button12");
+        speed12.addEventListener("click", function () {
+          player.setPlaybackRate(2.0);
+          //console.log(player.getCurrentTime());
+        });
+
+        /* function set_tempo(speed){
+
+          player.setPlaybackRate(speed);
+        } */
+
+        
+        var tempo = document.getElementById("speed_button");
+        tempo.addEventListener("click", function (evt) {
+          //console.log(evt.target);
+        });
+      
+        /* console.log(tempo); */
+        
+      }
+/*-----------------------------------------------------------------------------------*/
+
+      function onPlayerStateChange(event) {
+          if (event.data == YT.PlayerState.ENDED) {
+            currentVideoId++;
+            if (currentVideoId < videoIDs.length) {
+              player.loadVideoById(videoIDs[currentVideoId]);
+            }
+          }
+        }
+/*-----------------------------------------------------------------------------------*/
+      function update_BM_Rows_Display() {
+        //update/ADD BM rows from BM Json file data
+        for (var key_TS in BM_objct) {
+          var BM_name1 = BM_objct[key_TS].name;
+          var BM_ts1 = BM_objct[key_TS].TS;
+          var BM_date1 = BM_objct[key_TS].date;
+
+          if (key_TS == 0) {
+            continue;
+          }
+
+          //console.log("1: " + BM_name1 + " 2: " + BM_ts1 + " 3: " + BM_date1);
+
+          //Start--------------------------------------------------
+          //Create Main BM Row
+          var row = document.createElement("div");
+          row.setAttribute("class", "BM_MainROW");
+
+          //Create BM_Name #1
+          var name1 = document.createElement("input");
+          name1.type = "text";
+          name1.setAttribute("class", "BM_name");
+          name1.value = BM_name1;
+          row.appendChild(name1);
+
+          //Create BM_Time stamp #2
+          var timestamp1 = document.createElement("div");
+
+          const timeinseconds = new Date(null);
+          timeinseconds.setSeconds(BM_ts1); // specify value for SECONDS here
+          const formatted_Timestamp = timeinseconds.toISOString().slice(11, 19);
+          timestamp1.innerHTML = formatted_Timestamp;
+          timestamp1.setAttribute("class", "BM_timestamp");
+          row.appendChild(timestamp1);
+
+          //Create BM_Date #3
+          var date1 = document.createElement("div");
+          datetimecalc = currentDateandTime();
+          date1.innerHTML = BM_date1;
+          date1.setAttribute("class", "BM_date");
+          row.appendChild(date1);
+
+          //Create BM_Play button #4
+          var playbtn1 = document.createElement("button");
+          playbtn1.setAttribute("class", "BM_play");
+          playbtn1.setAttribute("onclick", "play_Selected_Bookmark()");
+          playbtn1.setAttribute("ts", `${BM_ts1}`);
+          //console.log("current time stamp: "+ playbtn1.getAttribute("ts"))
+          playbtn1.innerHTML = " Play Selected ";
+          row.appendChild(playbtn1);
+
+          //Create BM_Delete button #5
+          var deletebtn1 = document.createElement("button");
+          deletebtn1.setAttribute("class", "BM_delete");
+          deletebtn1.setAttribute("onclick", "row_Delete()");
+          deletebtn1.setAttribute("ts_dlt", `${BM_ts1}`);
+          deletebtn1.innerHTML = " Delete ";
+          row.appendChild(deletebtn1);
+
+          // Add the Row to the Table
+          let container = document.querySelector("#table1");
+          container.appendChild(row);
+        }
+      }
+
+/*-----------------------------------------------------------------------------------*/
+      function add_Bookmark() {
+        player.pauseVideo();
+        y.value = player.getCurrentTime();
+        bookmark_value = prompt("Please enter a Bookmark Name", "Chapter: ");
+        if (bookmark_value == null || bookmark_value == "Chapter: " || bookmark_value == "") {
+          console.log("Name: Null");
+          window.alert("Please Type Bookmark Name!");
+          return;
+        }
+        //Create Main BM Row
+        var row = document.createElement("div");
+        row.setAttribute("class", "BM_MainROW");
+
+        //Create BM_Name #1
+        var name1 = document.createElement("input");
+        name1.type = "text";
+        name1.setAttribute("class", "BM_name");
+        name1.value = bookmark_value;
+        row.appendChild(name1);
+
+        //Create BM_Time stamp #2
+        var timestamp1 = document.createElement("div");
+        const timeinseconds = new Date(null);
+        timeinseconds.setSeconds(player.getCurrentTime()); // specify value for SECONDS here
+        const formatted_Timestamp = timeinseconds.toISOString().slice(11, 19);
+        timestamp1.innerHTML = formatted_Timestamp;
+        //console.log(formatted_Timestamp);
+        timestamp1.setAttribute("class", "BM_timestamp");
+        row.appendChild(timestamp1);
+
+        //Create BM_Date #3
+        var date1 = document.createElement("div");
+        datetimecalc = currentDateandTime();
+        date1.innerHTML = datetimecalc;
+        date1.setAttribute("class", "BM_date");
+        row.appendChild(date1);
+
+        //Create BM_Play button #4
+        var playbtn1 = document.createElement("button");
+        playbtn1.setAttribute("class", "BM_play");
+        playbtn1.setAttribute("onclick", "play_Selected_Bookmark()");
+        playbtn1.setAttribute("ts", `${player.getCurrentTime()}`);
+        //console.log("current time stamp: "+ playbtn1.getAttribute("ts"))
+        playbtn1.innerHTML = " Play Selected ";
+        row.appendChild(playbtn1);
+
+        //Create BM_Delete button #5
+        var deletebtn1 = document.createElement("button");
+        deletebtn1.setAttribute("class", "BM_delete");
+        deletebtn1.setAttribute("onclick", "row_Delete()");
+        deletebtn1.setAttribute("ts_dlt", `${player.getCurrentTime()}`);
+        deletebtn1.innerHTML = " Delete ";
+        row.appendChild(deletebtn1);
+
+        // Add the Row to the Table
+        let container = document.querySelector("#table1");
+        container.appendChild(row);
+
+        update_BM_objct(bookmark_value, player.getCurrentTime(), datetimecalc);
+
+        //console.log(BM_objct);
+
+        return BM_objct;
+
+        //Comment Block
+        {
+          /* name1.innerHTML = bookmark_value;
+        name1.setAttribute('class', 'BM_name');
+
+        document.getElementById("table_BM").appendChild(name1); */
+          //console.log(bookmark_value);
+          /* let n = Bookmrk_Array.length;
+        console.log(n); */
+          /* let n = Object.keys(Bookmrk_Array).length
+        console.log(n); */
+          /*  let d =currentDateandTime();
+
+        let v = {
+          date: d,
+          Timestamp: x.currentTime,
+          Bookmark_name: bookmark_value
+        };
+
+        Bookmrk_Array.push(v);
+        console.log(Bookmrk_Array);
+        const myJSON = JSON.stringify(Bookmrk_Array);
+        var a = document.createElement("a");
+        a.href = window.URL.createObjectURL(new Blob([myJSON], {type: "text/plain"}));
+        a.download = "demo.json";
+        a.click(); */
+          /* let singleobj = {};
+        singleObj['date'] = 'date1';
+        singleObj['Timestamp'] = x.currentTime;
+        singleobj['Bookmark_name'] = bookmark_value;
+        Bookmrk_Array.push(singleObj); */
+          //Bookmrk_Array[n].Bookmark_name = n;
+          /* console.log(Bookmrk_Array[n-1].Bookmark_name);
+        Bookmrk_Array */
+        }
+      }
+/*-----------------------------------------------------------------------------------*/
+      function currentDateandTime() {
+        let current = new Date();
+        let cDate =
+          current.getFullYear() +
+          "-" +
+          (current.getMonth() + 1) +
+          "-" +
+          current.getDate();
+        let cTime =
+          current.getHours() +
+          ":" +
+          current.getMinutes();
+        
+        let dateTime = cDate + "_" + cTime;
+        return dateTime;
+      }
+/*-----------------------------------------------------------------------------------*/
+      function play_Selected_Bookmark() {
+        //console.log("Play   CLicked!!!!!!!!!!!");
+        let active_Play = document.activeElement;
+        let active_Timestamp = active_Play.getAttribute("ts");
+        //console.log("value1 is: " + active_Timestamp);
+        player.seekTo(active_Timestamp-2, true);
+        player.playVideo();
+        play_status=1;
+        
+      }
+/*-----------------------------------------------------------------------------------*/
+      function row_Delete() {
+        //console.log("Delete CLicked!!!!!!!!!!!");
+        if (confirm("Do You Wish To Delete The BookMark? ") == true) {
+          let active_Button = document.activeElement;
+          //console.log(active_Button.getAttribute("ts_dlt"));
+          let ts_tobe_deleted = active_Button.getAttribute("ts_dlt");
+          let parent_Row = active_Button.parentElement;
+          parent_Row.remove();
+          //alert(" Selected Bookmark Removed ");
+          //console.log(BM_objct);
+          delete BM_objct[ts_tobe_deleted];
+          //console.log(BM_objct);
+          return BM_objct;
+        }
+      }
+/*-----------------------------------------------------------------------------------*/
+      function update_BM_objct(name, time_stamp, date) {
+        //console.log(Object.keys(BM_objct).length);
+
+        //Check if the user has typed any text in BM Name input field
+        //if the value is empty/null or just placeholder text then abort the function
+        if (name == null || name == "Chapter: ") {
+          console.log("Name: Null");
+          return;
+        }
+
+        //Add new entry to Bookmark Json object------------------------
+        BM_objct[time_stamp] = { name: name, TS: time_stamp, date: date };
+
+        //console.log(BM_objct[Object.keys(BM_objct).length]);
+        // console.log("The complete BM object is:  ");
+        //console.log(BM_objct);
+        //json_to_Text();
+        return BM_objct;
+      }
+/*-----------------------------------------------------------------------------------*/
+      function json_to_Text() {
+        let myJSON = JSON.stringify(BM_objct);
+        //console.log(myJSON);
+      }
+/*-----------------------------------------------------------------------------------*/
+      function save_Bookmarks_json() {
+        let json_string = JSON.stringify(BM_objct);
+        //Bookmark FIle name
+        bookmark_filename = prompt("Please enter a FileName", "Filename: ");
+        if (bookmark_filename == null || bookmark_filename == "Filename: " || bookmark_filename == "") {
+          console.log("Name: Null");
+          window.alert("Please Enter a Filename!");
+          return;
+        }
+
+        var a = document.createElement("a");
+        a.setAttribute(
+          "href",
+          "data:text/plain;charset=utf-8," + encodeURIComponent(json_string)
+        );
+        a.setAttribute("download", `${bookmark_filename}.json`);
+        a.click();
+        /* const FileSystem = require("fs");
+          FileSystem.writeFile('BookMark.json', JSON.stringify(BM_objct), (error) => {
+            if (error) throw error;
+          }); */
+      }
+/*-----------------------------------------------------------------------------------*/
+    /*  var videoPlayer = document.getElementById('player');
+      $(window).keypress(function(e){
+        if(e.keyCode == 32 || e.keyCode == 0){  
+          // stops default behaviour of space bar. Stop page scrolling down
+          console.log(play_status);
+          e.preventDefault();  
+          play_pause_video();
+        }
+      } );
+
+      function play_pause_video() {
+        if (play_status==0) 
+        { 
+          videoPlayer.playVideo(); 
+        }
+        else 
+        { 
+          videoPlayer.pauseVideo();
+        }
+      } */
+
+
+
+    </script>
+  </body>
+</html>
