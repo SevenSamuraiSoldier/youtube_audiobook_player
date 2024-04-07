@@ -101,7 +101,7 @@
         align-items: center;
       }
       #url_input,
-      #url_button {
+      #url_button  {
         margin: 0.5em;
         margin-left: 2.5em;
         margin-top: 0;
@@ -131,15 +131,23 @@
         margin-left: 0;
       }
       /*----------------------------------*/
+
+      #inputField {
+        min-width: 1em;
+        width: 7em;
+
+
+      }
       .speed_button_div,
       .jump_button_div {
         display: flex;
-        width: 85%;
+        /*width: 100%; */
         flex-wrap: wrap;
         /* gap: 2em; */
         margin: 2em;
         margin-top: 0;
         margin-bottom: 0;
+        margin-right: 0.5em;
         flex-direction: row;
         align-content: space-around;
         justify-content: start;
@@ -396,8 +404,8 @@
       <button class="button" id="L-jump-front"></button> 
       -->
 
-
       <button class="button" id="stop-button">&#x23F9 Stop</button>
+      <button class="add_BM" onclick="add_Bookmark()">Add Bookmark</button>
       <button onclick="save_Bookmarks_json()" class="BM_save">Save Bookmarks</button>
       <!--  <input type="file" onclick="load_BM_Json_File()"  class="BM_load"/> -->
       <input
@@ -421,6 +429,7 @@
       </button> -->
       
       <div class="speed_button_div">
+        <button class="speed_button" id="speed_button0">Reset</button>
         <button class="speed_button" id="speed_button">1.25x</button>
         <button class="speed_button" id="speed_button2">1.3x</button>
         <button class="speed_button" id="speed_button3">1.35x</button>
@@ -433,6 +442,9 @@
         <button class="speed_button" id="speed_button10">1.8x</button>
         <button class="speed_button" id="speed_button11">1.9x</button>
         <button class="speed_button" id="speed_button12">2.0x</button>
+        <input type="text" id="inputField"
+        placeholder="Custom Speed: ">
+        <button class="speed_button" id="set_customspeed">Set Speed</button>
       </div> 
     </div>
 
@@ -441,12 +453,15 @@
       <button class="play_from" onclick="playFrom()">Play from</button>
       <input class="text_field" type="number" id="timeStamp" />
 
+      <!-- //Removed the below button next to Save bookmarks button on 7th April 2024 
       <button class="add_BM" onclick="add_Bookmark()">Add Bookmark</button>
+      -->
 
       <div>Timestamp:</div>
       <input class="text_field" type="text" id="timepaused" />
 
       <label id="current_speed"> Current Playback Rate: </label>
+      <label id="display_speed"> 1.0 </label>
     </div>
 <!----------------------------------------------------------------------------->
 
@@ -900,10 +915,17 @@
           playlist: videoIDs,
         });
 
+        var current_tempo = document.getElementById("display_speed");
         //change playback rate 
+        var speed0 = document.getElementById("speed_button0");
+        speed0.addEventListener("click", function () {
+          player.setPlaybackRate(1.0);
+          current_tempo.innerHTML = "1.0";
+        });
         var speed = document.getElementById("speed_button");
         speed.addEventListener("click", function () {
           player.setPlaybackRate(1.25);
+          current_tempo.innerHTML = "1.25";
           /*convert video play time in seconds to HH:MM:SS format
           const timeinseconds = new Date(null);
           timeinseconds.setSeconds(player.getCurrentTime()); // specify value for SECONDS here
@@ -915,64 +937,82 @@
         var speed2 = document.getElementById("speed_button2");
         speed2.addEventListener("click", function () {
           player.setPlaybackRate(1.3);
+          current_tempo.innerHTML = "1.3";
           //console.log(player.getCurrentTime());
         });
         var speed3 = document.getElementById("speed_button3");
         speed3.addEventListener("click", function () {
           player.setPlaybackRate(1.35);
+          current_tempo.innerHTML = "1.35";
           //console.log(player.getCurrentTime());
         });
         var speed4 = document.getElementById("speed_button4");
         speed4.addEventListener("click", function () {
           player.setPlaybackRate(1.4);
+          current_tempo.innerHTML = "1.4";
           //console.log(player.getCurrentTime());
         });
         var speed5 = document.getElementById("speed_button5");
         speed5.addEventListener("click", function () {
           player.setPlaybackRate(1.45);
+          current_tempo.innerHTML = "1.45";
           //console.log(player.getCurrentTime());
         });
         var speed6 = document.getElementById("speed_button6");
         speed6.addEventListener("click", function () {
           player.setPlaybackRate(1.5);
+          current_tempo.innerHTML = "1.5";
           //console.log(player.getCurrentTime());
         });
         var speed7 = document.getElementById("speed_button7");
         speed7.addEventListener("click", function () {
           player.setPlaybackRate(1.55);
+          current_tempo.innerHTML = "1.55";
           //console.log(player.getCurrentTime());
         });
         var speed8 = document.getElementById("speed_button8");
         speed8.addEventListener("click", function () {
           player.setPlaybackRate(1.6);
+          current_tempo.innerHTML = "1.6";
           //console.log(player.getCurrentTime());
         });
         var speed9 = document.getElementById("speed_button9");
         speed9.addEventListener("click", function () {
           player.setPlaybackRate(1.7);
+          current_tempo.innerHTML = "1.7";
           //console.log(player.getCurrentTime());
         });
         var speed10 = document.getElementById("speed_button10");
         speed10.addEventListener("click", function () {
           player.setPlaybackRate(1.8);
+          current_tempo.innerHTML = "1.8";
           //console.log(player.getCurrentTime());
         });
         var speed11 = document.getElementById("speed_button11");
         speed11.addEventListener("click", function () {
           player.setPlaybackRate(1.9);
+          current_tempo.innerHTML = "1.9";
           //console.log(player.getCurrentTime());
         });
         var speed12 = document.getElementById("speed_button12");
         speed12.addEventListener("click", function () {
           player.setPlaybackRate(2.0);
+          current_tempo.innerHTML = "2.0";
           //console.log(player.getCurrentTime());
         });
-
-        /* function set_tempo(speed){
-
-          player.setPlaybackRate(speed);
-        } */
-
+        
+        //Added Input filed & button for Custom speed on 7th April 2024-------
+        var customspeed_button = document.getElementById("set_customspeed");
+        customspeed_button.addEventListener("click", function () {
+          var custom_Speed = document.getElementById("inputField");
+          var inputValue = parseFloat(custom_Speed.value);
+          //console.log(inputValue);
+          //console.log(typeof(inputValue));
+          player.setPlaybackRate(inputValue);
+          current_tempo.innerHTML = inputValue;
+          //clear the custom speed value input
+          custom_Speed.value = "";
+        });
         
         var tempo = document.getElementById("speed_button");
         tempo.addEventListener("click", function (evt) {
@@ -982,6 +1022,15 @@
         /* console.log(tempo); */
         
       }
+
+      /*function handleKeyPress(event) {
+          if (event.key === 'Enter') {
+            var inputValue = document.getElementById('inputField').value;
+            console.log(inputValue);
+            player.setPlaybackRate(inputValue);
+            //document.getElementById('displayValue').textContent = inputValue;
+          }
+        }*/
 /*-----------------------------------------------------------------------------------*/
 
       function onPlayerStateChange(event) {
