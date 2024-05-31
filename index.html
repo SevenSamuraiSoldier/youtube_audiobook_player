@@ -244,6 +244,13 @@
         padding: 0.5em;
         margin: 0.25em;
       }
+      #close_hs_popup {
+        padding-inline: 1em;
+        padding-top: 0.2em;
+        padding-bottom: 0.2em;
+        border-width: 0.18em;
+        min-width: 5em;
+      }
       .BM_delete,
       .BM_play,
       .add_BM,
@@ -251,7 +258,13 @@
       .choose_button,
       .BM_save,
       .BM_load,
-      .fullscreen_button {
+      .fullscreen_button,
+      .add_BMList,
+      .close_popup,
+      .set_timer,
+      .history_popup,
+      .close_hs_popup,
+      .openPanel {
         margin-left: 0.2em;
         min-width: 10em;
         /* border-color: #32AC71; */
@@ -270,7 +283,13 @@
       .play_from:hover,
       .BM_save:hover,
       .BM_load:hover,
-      .fullscreen_button:hover {
+      .fullscreen_button:hover,
+      .add_BMList:hover,
+      .close_popup:hover,
+      .set_timer:hover,
+      .history_popup:hover,
+      .close_hs_popup:hover,
+      .openPanel:hover {
 
         cursor: pointer;
         background-color: #0b552b;
@@ -315,6 +334,9 @@
         display: grid;
         margin-top: 0;
       }
+      .text_field {
+        width: 4em;
+      }
 
       .BM_name,
       .text_field {
@@ -347,7 +369,107 @@
         width: 50%;
       }
       
+      .mainBMPanel {
+        width: 45vw;
+        height: 90vh;
+        position: absolute;
+        left:77%;
+        top: 49%;
+        background-color: #295376;
+        border-radius: 0.8em;
+        transform: translate(-50%,-50%);
+        justify-content: center;
+        text-align: center;
+        overflow-y: scroll;
+        visibility: hidden;
+        padding-bottom: 0.5em;
+        padding-top: 0.5em;
+      }
+      #list-input {
 
+        width: 80%;
+        height: auto;
+        border-radius: 1em;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+      }
+      #list_Label {
+        color: azure;
+      }
+      .title_Panel {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-content: center;
+        align-items: center;
+        padding-inline: 1em;
+      }
+      #close_popup {
+        padding-top: 0.2em;
+        padding-bottom: 0.2em;
+        min-width: 5em;
+      }
+      .HS_MasterPanel {
+        width: 45vw;
+        height: 80vh;
+        position: absolute;
+        left:77%;
+        top: 50%;
+        background-color: #295376;
+        border-radius: 0.8em;
+        transform: translate(-50%,-50%);
+        justify-content: center;
+        text-align: center;
+        overflow-y: scroll;
+        visibility: hidden;
+        padding-bottom: 0.5em;
+      }
+      
+      .HS_MainROW {
+        background-color: #aed580;
+        border-color: hsl(151, 55%, 44%);
+        border-bottom-width: 0.15em;
+        border-style: solid;
+        border-radius: 0.5em;
+        padding: 0.5em;
+        display: grid;
+        /* gap: 5px; */
+        grid-template-columns: 1fr 1fr 0.5fr;
+        align-items: center;
+        margin: 1em;
+        margin-bottom: 0.25em; 
+        margin-top: 0.25em;
+      }
+      #HS_Label {
+        color: azure;
+      }
+      .HS_label_Panel {
+        display: flex;
+        position: sticky;
+        top: 0;
+        width: auto;
+        height: 10%;
+        /* Adjust the background color as needed */
+        z-index: 1; /* Ensure the panel is on top of the scrollable content */
+        padding: 0.5em; /* Add some padding for better visibility */
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        align-content: center;
+        align-items: center;
+        background-color: #295376;
+
+      }
+      .non_Scrollable_Panel {
+        position: sticky;
+        display: grid;
+        z-index: 1; /* Ensure the panel is on top of the scrollable content */
+        padding: 0.5em;
+
+      }
+      #set_timer {
+        margin-left: 3em;
+      }
 
     </style>
   </head>
@@ -385,6 +507,7 @@
         <button class="button" id="next"></button>
         <button class="button" id="L-jump-front"></button>
         <button class="button" id="H-jump-front"></button>
+        <button class="history_popup" id="history_popup" onclick="display_pause_History()">Pause History</button>
         
         <!---
         <button class="button" id="L-jump-back" name="LJB"></button>
@@ -392,6 +515,20 @@
         <button class="button" id="next"></button>
         <button class="button" id="L-jump-front"></button>
       -->
+    </div>
+    <div class="HS_MasterPanel" id="HS_MasterPanel">
+      <div class="HS_label_Panel">
+        <label id="HS_Label"> Pause History </label>
+        <button class="close_hs_popup" id="close_hs_popup" onclick="close_HS_Popup()">Close</button>
+      </div>
+      
+      <div class="HS_MainROW" id="HS_MainROW">
+        <div class="BM_timestamp">Playback Time</div>
+        <div class="BM_timestamp">Date</div>
+        <div class="BM_date"></div>
+      </div>
+      <div id="history_panel" class="history_panel"></div>
+      
     </div>
 <!----------------------------------------------------------------------------->
     
@@ -420,6 +557,7 @@
       <button id="fileSelect" class="BM_load" type="button">
         Load BookMarks
       </button>
+      <button class="openPanel" id="openPanel" onclick="openPanel()">Add Bookmarks from YT</button>
       <!---
       <button
         id="BM_display"
@@ -449,18 +587,45 @@
         <button class="speed_button" id="set_customspeed">Set Speed</button>
       </div> 
     </div>
+    <div class="mainBMPanel" id="mainBMPanel">
+      <form>
+        <div class="title_Panel">
+          
+          <label for="list-input" id="list_Label">Enter the Bookmark list from Youtube Comments Section:</label><br>
+          <button class="close_popup" id="close_popup" onclick="close_BMPanel()">Close</button>
+          
+        </div>
+        
+        <textarea id="list-input" rows="26"></textarea><br>
+        <button type="button" class="add_BMList" onclick="add_BMList()">Add Bookmarks</button>
+      </form>
+
+    </div>
+    
+
 
 <!----------------------------------------------------------------------------->
     <div class="cont2">
-      <button class="play_from" onclick="playFrom()">Play from</button>
-      <input class="text_field" type="number" id="timeStamp" />
+      <button class="play_from" onclick="playFrom()" id="play_from">Play from</button>
+      
+
+      <input type="number" id="hourInput" min="0" max="23" step="1" class="text_field" placeholder="HH:">
+      <input type="number" id="minuteInput" min="0" max="59" step="1" class="text_field" placeholder="MM:">
+      <input type="number" id="secondInput" min="0" max="59" step="1" class="text_field"placeholder="SS:">
+
+      <button class="set_timer" id="set_timer" onclick="setTimer()">Set Timer</button>
+      <input type="number" id="minuteTimer" min="0" max="59" step="1" class="text_field" placeholder="MM:">
+      <input type="number" id="secondTimer" min="0" max="59" step="1" class="text_field"placeholder="SS:">
 
       <!-- //Removed the below button next to Save bookmarks button on 7th April 2024 
       <button class="add_BM" onclick="add_Bookmark()">Add Bookmark</button>
       -->
 
+      <!----
+      <input class="text_field" type="number" id="timeStamp" />
       <div>Timestamp:</div>
       <input class="text_field" type="text" id="timepaused" />
+      -->
 
       <label id="current_speed"> Current Playback Rate: </label>
       <label id="display_speed"> 1.0 </label>
@@ -569,6 +734,11 @@
       var BM_objct = {
         0: { name: "BM Name", TS: "TimeStamp", date: "Date" },
       };
+
+      //Declaring Pause History Object with Headers--------------------------------------
+      var HS_objct = {
+        0: {TS: "TimeStamp", date: "Date" },
+      };
       
       var input_field = document.getElementById("url_input");
       input_field.addEventListener("change",function(evt){
@@ -619,17 +789,123 @@
           return inputString;
         }
 
-
-        //console.log("url link is:",url_link);
+        /*console.log("url link is:",url_link);
         //url_link = evt.target.value;
         //console.log(evt.target.value);
+        */
       });
 
       var x = document.getElementById("player");
-      var y = document.getElementById("timepaused");
+      //var y = document.getElementById("timepaused");
       const fileSelect = document.getElementById("fileSelect");
       const fileElem = document.getElementById("fileElem");
       const BM_reader = new FileReader();
+
+      function openPanel() {
+        var bmPanel = document.getElementById("mainBMPanel");
+        bmPanel.style.visibility = 'visible';
+      }
+      function close_BMPanel() {
+        //e.preventDefault();
+        var bmPanel = document.getElementById("mainBMPanel");
+        bmPanel.style.visibility = 'hidden';
+      }
+      function close_HS_Popup() {
+        var hsPanel = document.getElementById("HS_MasterPanel");
+        hsPanel.style.visibility = 'hidden';
+
+      }
+      function display_pause_History() {
+        //update/ADD BM rows from BM Json file data
+        let container = document.querySelector("#history_panel");
+
+        //-- To clear the Main Pause History Panel to avoide duplication of entries ----
+        container.innerHTML="";
+        
+        for (var key_TS in HS_objct) {
+          
+          var BM_ts1 = HS_objct[key_TS].TS;
+          var BM_date1 = HS_objct[key_TS].date;
+
+          if (key_TS == 0) {
+            continue;
+          }
+
+          //console.log("1: " + BM_ts1 + " 2: " + BM_date1);
+
+          //Start--------------------------------------------------
+          //Create Main BM Row
+          var row = document.createElement("div");
+          row.setAttribute("class", "HS_MainROW");
+
+          //Create Pause_Time stamp #1
+          var timestamp1 = document.createElement("div");
+          const timeinseconds = new Date(null);
+          timeinseconds.setSeconds(BM_ts1); // specify value for SECONDS here
+          const formatted_Timestamp = timeinseconds.toISOString().slice(11, 19);
+          timestamp1.innerHTML = formatted_Timestamp;
+          timestamp1.setAttribute("class", "BM_timestamp");
+          row.appendChild(timestamp1);
+
+          //Create Pause_Date #2
+          var date1 = document.createElement("div");
+          datetimecalc = currentDateandTime();
+          date1.innerHTML = BM_date1;
+          date1.setAttribute("class", "BM_date");
+          row.appendChild(date1);
+
+          //Create History_Play button #3
+          var playbtn1 = document.createElement("button");
+          playbtn1.setAttribute("class", "BM_play");
+          playbtn1.setAttribute("id", "HS_play");
+          playbtn1.setAttribute("onclick", "play_History()");
+          playbtn1.setAttribute("ts", `${BM_ts1}`);
+          //console.log("current time stamp: "+ playbtn1.getAttribute("ts"))
+          playbtn1.innerHTML = "Play";
+          row.appendChild(playbtn1);
+
+          // Add the Row to the Table
+          container.appendChild(row);
+        }
+        // -- To set the visibility of Main Pause History panel to Visible -----------
+        var hsPanel = document.getElementById("HS_MasterPanel");
+        hsPanel.style.visibility = 'visible';
+      }
+      
+      function add_BMList() {
+        var bmPanel = document.getElementById("mainBMPanel");
+        const inputText = document.getElementById('list-input').value;
+        const items = inputText.split('\n');
+
+        // Function to convert timestamp to seconds
+        function convertToSeconds(timestamp) {
+          const [hours, minutes, seconds] = timestamp.split(':');
+          return (+hours) * 3600 + (+minutes) * 60 + (+seconds);
+        }
+
+        // Function to create an object with name and timestamp in seconds
+        function createItemObject(item) {
+          const [timestamp, name] = item.split(' - ');
+          const timestampInSeconds = convertToSeconds(timestamp);
+          return { name, timestampInSeconds };
+        }
+
+        // Create an object with name and timestamp in seconds for each item
+        const itemObjects = items.map(createItemObject);
+
+        // Create the final object with keys outside
+        //const HS_object = {};
+        itemObjects.forEach(({ name, timestampInSeconds }) => {
+          BM_objct[timestampInSeconds] = { name, TS: timestampInSeconds };
+        });
+        console.log(BM_objct);
+        bmPanel.style.visibility = 'hidden';
+
+        update_BM_Rows_Display();
+
+        //const outputDiv = document.getElementById('output');
+        //outputDiv.innerHTML = '<pre>' + JSON.stringify(HS_object, null, 2) + '</pre>';
+      }
 /*-----------------------------------------------------------------------------------*/
       fileSelect.addEventListener(
         "click",
@@ -895,17 +1171,27 @@
           }
           else if (e.keyCode == '32') {
               // Space bar
-                if (play_status==0){
+                if (play_status==0){  // if the video is Paused (paused status = 0)
                   e.preventDefault();
                   player.playVideo();
                   //console.log("playing");
                   play_status=1;
                 }
-                else{
+                else{                // if the video is Playing (playing status = 1)
                   e.preventDefault();
                   player.pauseVideo();
                   //console.log("paused");
                   play_status=0;
+
+                  /* ---Old code to add pause entry when spacebar is pressed.
+                  the new code is added to playerstatechange function----------
+                  datetimecalc = currentDateandTime();
+                  var currentTime = player.getCurrentTime();
+                  console.log("CT is: " + currentTime);
+                  update_HS_objct(currentTime, datetimecalc);
+                  //console.log(HS_objct);
+                  */
+                  
                 }
           }
         }
@@ -1022,8 +1308,39 @@
         });
       
         /* console.log(tempo); */
+        var playFrom = document.getElementById("play_from");
+        playFrom.addEventListener("click", function (evt) {
+          //console.log(evt.target);
+          var hrInput = document.getElementById('hourInput');
+          var minsInput = document.getElementById('minuteInput');
+          var secInput = document.getElementById('secondInput');
+          const hour = parseInt(hrInput.value, 10) || 0;
+          const minute = parseInt(minsInput.value, 10) || 0;
+          const second = parseInt(secInput.value, 10) || 0;
+          //console.log(hour+" : "+minute+" : "+second);
+        
+          var timeSecondsPlay = hour*3600 + minute*60 + second;
+          //console.log(timeSecondsPlay);
+          player.seekTo(timeSecondsPlay,true);
+          player.playVideo();
+          play_status=1;
+          hrInput.value ="";
+          minsInput.value ="";
+          secInput.value ="";
+        });
         
       }
+      
+      /*
+      player.addEventListener('pause', () => {
+
+        console.log('Audio paused');
+        datetimecalc = currentDateandTime();
+        var currentTime = player.getCurrentTime();
+        console.log("CT is: " + currentTime); 
+        update_HS_objct(currentTime, datetimecalc);
+      });
+      */
 
       /*function handleKeyPress(event) {
           if (event.key === 'Enter') {
@@ -1041,6 +1358,16 @@
             if (currentVideoId < videoIDs.length) {
               player.loadVideoById(videoIDs[currentVideoId]);
             }
+          }
+
+          // To check if the video is paused & add entry to the pause history object-----
+          if (event.data == YT.PlayerState.PAUSED) {
+            // Video is paused, do something here
+            console.log('Video is paused');
+            datetimecalc = currentDateandTime();
+            var currentTime = player.getCurrentTime();
+            console.log("CT is: " + currentTime); 
+            update_HS_objct(currentTime, datetimecalc);
           }
         }
 /*-----------------------------------------------------------------------------------*/
@@ -1112,7 +1439,7 @@
 /*-----------------------------------------------------------------------------------*/
       function add_Bookmark() {
         player.pauseVideo();
-        y.value = player.getCurrentTime();
+        //y.value = player.getCurrentTime();
         bookmark_value = prompt("Please enter a Bookmark Name", "Chapter: ");
         if (bookmark_value == null || bookmark_value == "Chapter: " || bookmark_value == "") {
           console.log("Name: Null");
@@ -1238,6 +1565,17 @@
         play_status=1;
         
       }
+      function play_History() {
+        //console.log("Play   CLicked!!!!!!!!!!!");
+        let active_Play = document.activeElement;
+        let active_Timestamp = active_Play.getAttribute("ts");
+        //console.log("value1 is: " + active_Timestamp);
+        player.seekTo(active_Timestamp-2, true);
+        player.playVideo();
+        play_status=1;
+        close_HS_Popup();
+        
+      }
 /*-----------------------------------------------------------------------------------*/
       function row_Delete() {
         //console.log("Delete CLicked!!!!!!!!!!!");
@@ -1273,6 +1611,14 @@
         //console.log(BM_objct);
         //json_to_Text();
         return BM_objct;
+      }
+
+      //Function to add new pause history entries to the HS object-------------------------
+      function update_HS_objct(time_stamp, date) {
+        
+        //Add new entry to pause history Json object------------------------
+        HS_objct[time_stamp] = { TS: time_stamp, date: date };
+        return HS_objct;
       }
 /*-----------------------------------------------------------------------------------*/
       function json_to_Text() {
