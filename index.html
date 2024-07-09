@@ -196,7 +196,7 @@
             border-style: solid;
             border-color: #32ac71;
             border-width: 0.25em;
-          }
+      }
       .fullscreen_button:hover {
         cursor: pointer;
         background-color: #0b552b;
@@ -403,6 +403,7 @@
         align-content: center;
         align-items: center;
         padding-inline: 1em;
+        margin-top: 0.5em;
       }
       #close_popup {
         padding-top: 0.2em;
@@ -469,6 +470,122 @@
       }
       #set_timer {
         margin-left: 3em;
+      }
+      #timer {
+        visibility: hidden;
+      }
+
+      @media (max-aspect-ratio: 1/1) {
+        .fullscreen_button {
+          visibility: hidden;
+        }
+        
+        button{
+          font-size: 0.8em;
+          letter-spacing: normal;
+        }
+        input {
+          font-size: 0.8em;
+
+        }
+        body,
+        label {
+          font-size: 0.8em;
+        }
+        .BM_MainROW{
+          background-color: #aed580;
+          border-color: hsl(151, 55%, 44%);
+          border-bottom-width: 0.15em;
+          border-style: solid;
+          border-radius: 0.5em;
+          /* padding: 0.25em; */
+          display: flex;
+          /* gap: 5px; */
+          grid-template-columns: 50% 0.7fr 1fr 1fr 1fr;
+          align-items: center;
+          margin-bottom: 0.5em;
+          margin: 0.5em;
+          margin-top: 0.25em;
+          margin-bottom: 0.25em;
+          flex-wrap: nowrap;
+          align-content: center;
+          justify-content: center;
+          flex-direction:column;
+          text-align: center;
+        }
+        .HS_MasterPanel,
+        .mainBMPanel {
+          width: 100vw;
+          height: 100vh;
+          left: 50%;
+
+        }
+        .HS_MasterPanel{
+          top: 52%;
+        }
+        .mainBMPanel {
+          top: 55%;
+        }
+        
+        .BM_play {
+          min-width: 1em;
+        }
+        .speed_button_div,
+        .jump_button_div,
+        .cont2 {
+          margin-left: 0.5em;
+        }
+        #speed_btn_div {
+          margin-left: 0;
+
+        }
+        #set_timer {
+          margin-left: 0.2em;
+        }
+        #url_input {
+          margin-left: 1em;
+        }
+        iframe {
+          width: 100vw;
+          height: auto;
+        }
+        #player,
+        .parent_div {
+
+          width: 80%;
+        }
+        #BM_MainROW {
+          display: none;
+        }
+        #L-jump-back,
+        #L-jump-front {
+          display: none;
+        }
+        #inputField {
+          width: 3.5em;
+        }
+        .speed_button_div > *,
+        .jump_button_div > * {
+          margin-top: 0;
+          min-width: 5em;
+          
+        }
+        #pause-button, 
+        #stop-button {
+          margin-left: 0.25em;  
+        }
+        #close_hs_popup,
+        #close_popup,
+        .add_BMList {
+          padding-inline: 1em;
+          padding-top: 0.5em;
+          padding-bottom: 0.5em;
+          border-width: 0.18em;
+          min-width: 8em;
+        }
+        .title_Panel {
+          margin-top: 1em;
+        }
       }
 
     </style>
@@ -568,7 +685,7 @@
         Display BookMarks
       </button> -->
       
-      <div class="speed_button_div">
+      <div class="speed_button_div" id="speed_btn_div">
         <button class="speed_button" id="speed_button0">Reset</button>
         <button class="speed_button" id="speed_button">1.25x</button>
         <button class="speed_button" id="speed_button2">1.3x</button>
@@ -629,6 +746,7 @@
 
       <label id="current_speed"> Current Playback Rate: </label>
       <label id="display_speed"> 1.0 </label>
+      <h2 id="timer">Timer is Here</h2>
     </div>
 <!----------------------------------------------------------------------------->
 
@@ -1021,7 +1139,7 @@
         //console.log("VideoId for YT Api:  " + final_url);
         //console.log("FInal Link:  " + final_url);
         videoIDs = [`${final_url}`];
-        //console.log(videoIDs);
+        console.log(videoIDs);
         document.getElementById("url_input").value = "";
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/player_api";
@@ -1363,10 +1481,10 @@
           // To check if the video is paused & add entry to the pause history object-----
           if (event.data == YT.PlayerState.PAUSED) {
             // Video is paused, do something here
-            console.log('Video is paused');
+            //console.log('Video is paused');
             datetimecalc = currentDateandTime();
             var currentTime = player.getCurrentTime();
-            console.log("CT is: " + currentTime); 
+            //console.log("CT is: " + currentTime); 
             update_HS_objct(currentTime, datetimecalc);
           }
         }
@@ -1565,6 +1683,8 @@
         play_status=1;
         
       }
+
+
       function play_History() {
         //console.log("Play   CLicked!!!!!!!!!!!");
         let active_Play = document.activeElement;
@@ -1648,6 +1768,71 @@
             if (error) throw error;
           }); */
       }
+
+      // Define the media query
+      const mediaQuery = window.matchMedia('(max-aspect-ratio: 1/1)');
+      var textSize = "0.8em";
+      // Add an event listener to the media query
+      mediaQuery.addEventListener('change', function(event) {
+        if (event.matches) {
+
+          elementResizeOnARChange();
+
+          /*
+          // Change the text of the button with ID H-jump-back
+          document.getElementById('H-jump-back').innerHTML = '&#9194';
+          document.getElementById('H-jump-back').style.fontSize = textSize;
+          //document.getElementById('L-jump-back').innerHTML = '&#9664';
+          document.getElementById('previous').innerHTML = '&#9664';
+          document.getElementById('previous').style.fontSize = textSize;
+
+          document.getElementById('next').innerHTML = '&#9654';
+          document.getElementById('next').style.fontSize = textSize;
+          //document.getElementById('L-jump-front').innerHTML = '&#9654';
+          document.getElementById('H-jump-front').innerHTML = '&#9193';
+          document.getElementById('H-jump-front').style.fontSize = textSize;
+          */
+        }
+      });
+
+      function elementResizeOnARChange(){
+
+        document.getElementById('H-jump-back').innerHTML = '&#8920';   // &#9194
+        document.getElementById('H-jump-back').style.fontSize = textSize;
+        //document.getElementById('L-jump-back').innerHTML = '&#9664';
+        document.getElementById('previous').innerHTML = '&#8810;';   // &#9664
+        document.getElementById('previous').style.fontSize = textSize;
+
+        document.getElementById('next').innerHTML = '&#8811';  // &#9654
+        document.getElementById('next').style.fontSize = textSize;
+        //document.getElementById('L-jump-front').innerHTML = '&#9654';
+        document.getElementById('H-jump-front').innerHTML = '&#8921';   //  &#9193
+        document.getElementById('H-jump-front').style.fontSize = textSize;
+        console.log("AR have became less than 1...");
+
+      }
+      function checkAspectRatio() {
+        // Get the viewport width and height
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Calculate the aspect ratio
+        const aspectRatio = width / height;
+
+        // Check the aspect ratio and apply styles
+        if (aspectRatio <= 1) {
+
+          elementResizeOnARChange();
+          console.log("AR is Checked...");
+        } 
+        else {
+          // Apply styles for landscape mode
+          console.log("AR is more than 1");
+        }
+      }
+
+      // Call the checkAspectRatio function when the page loads
+      window.addEventListener('load', checkAspectRatio);
 /*-----------------------------------------------------------------------------------*/
     /*  var videoPlayer = document.getElementById('player');
       $(window).keypress(function(e){
@@ -1669,6 +1854,172 @@
           videoPlayer.pauseVideo();
         }
       } */
+
+      /*
+      let timer;
+      let isActive = true;
+      // User-specified time in milliseconds (e.g., 5 minutes = 300000 ms)
+      var inactivityTime = 300000;
+
+      function setTimer(){
+        isActive = true;
+        var t1 = document.getElementById("minuteTimer");
+        var t2 = document.getElementById("secondTimer");
+        //var t3 = 
+        var minute = parseInt(t1.value, 10) || 0;
+        var sec = parseInt(t2.value, 10) || 0;
+        var t3 = (minute*60 + sec) * 1000;
+        //console.log(t3);
+        if (t3 == 0){
+          t3 = 300000; //-----5mins
+          console.log("time t3 is: " + t3/1000 + " secs");
+        }
+        inactivityTime = t3;
+        console.log("time is: "+inactivityTime);
+        resetTimer();
+        // Event listeners for mouse movement and keyboard activity
+        document.addEventListener("mousemove", resetTimer);
+        document.addEventListener("keydown", resetTimer);
+
+      }
+
+      // Function to reset the timer
+      function resetTimer() {
+        clearTimeout(timer);
+        //console.log("reset timer function is called");
+        //console.log("flag is: "+isActive);
+        timer = setTimeout(showInactivityDialog, inactivityTime);
+      }
+
+      // Function to show the inactivity dialog
+      function showInactivityDialog() {
+        if (isActive) {
+          isActive = false;
+          //x.pauseVideo();
+          player.pauseVideo();
+          console.log("player paused");
+          const message = "You have been inactive for some time. The playback is paused. Press OK to reset the timer or Press Cancel to abort the timer.";
+          const confirmDialog = confirm(message);
+          
+          if (confirmDialog) {
+            resetTimer();
+            isActive = true;
+            console.log("flag is: " + isActive);
+          } else {
+            // Perform any additional actions if the user chooses to leave the page
+            console.log("User chose to leave the page.");
+            console.log("flag is: "+isActive);
+          }
+        }
+      }
+      */
+
+      let timer;
+      let isActive = true;
+      // User-specified time in milliseconds (e.g., 5 minutes = 300000 ms)
+      var inactivityTime = 300000;
+      
+      //var displayTimer = document.getElementById("timer");
+
+
+      function setTimer(){
+        isActive = true;
+        var t1 = document.getElementById("minuteTimer");
+        var t2 = document.getElementById("secondTimer");
+        //var t3 = 
+        var minute = parseInt(t1.value, 10) || 0;
+        var sec = parseInt(t2.value, 10) || 0;
+        var t3 = (minute*60 + sec) * 1000;
+        //console.log(t3);
+        if (t3 == 0){
+          t3 = 300000; //-----5mins
+          console.log("time t3 is: " + t3/1000 + " secs");
+        }
+        inactivityTime = t3;
+        console.log("timer set for: "+inactivityTime);
+        resetTimer();
+        //displayTimer();
+        //displayTimer(minute,sec);
+        // Event listeners for mouse movement and keyboard activity
+        //document.addEventListener("mousemove", resetTimer);
+        //document.addEventListener("keydown", resetTimer);
+
+      }
+      // Function to reset the timer
+      function resetTimer() {
+        clearTimeout(timer);
+        //console.log("reset timer function is called");
+        //console.log("flag is: "+isActive);
+        displayTimer();
+        timer = setTimeout(videoHalt, inactivityTime);
+        timer = setTimeout(showInactivityDialog, inactivityTime);
+        //player.pauseVideo();
+      }
+      // Function to show the inactivity dialog
+      function showInactivityDialog() {
+        if (isActive) {
+          isActive = false;
+          //videoHalt();
+          //console.log("player paused");
+          const message = "You have been inactive for some time. The playback is paused. Press OK to reset the timer or Press Cancel to abort the timer.";
+          const confirmDialog = confirm(message);
+          
+          if (confirmDialog) {
+            resetTimer();
+            isActive = true;
+            //console.log("flag is: " + isActive);
+            console.log("TImer is Re-activated...");
+            player.playVideo();
+          } else {
+            // Perform any additional actions if the user chooses to leave the page
+            console.log("Timer is Cancelled!...");
+            player.playVideo();
+            //console.log("flag is: "+isActive);
+          }
+        }
+      }
+
+      function videoHalt () {
+        player.pauseVideo();
+      }
+
+      function displayTimer() {
+        // Get the user-entered minutes and seconds
+        var minutes = document.getElementById("minuteTimer").value;
+        var seconds = document.getElementById("secondTimer").value;
+
+        // Calculate the total countdown time in milliseconds
+        var countDownDate = new Date().getTime() + (minutes * 60 * 1000) + (seconds * 1000);
+
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for minutes and seconds
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000)+1;
+
+            // Display the result in the element with id="timer"
+            var displayTime = document.getElementById("timer");
+            displayTime.style.visibility = "visible";
+            displayTime.innerHTML = minutes + "m " + seconds + "s ";
+            //displayTimer.style.visibility = "visible";
+            //displayTimer.innerHTML = minutes + "m " + seconds + "s ";
+
+            // If the count down is finished, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                //document.getElementById("timer").innerHTML = "EXPIRED";
+                displayTime.style.visibility = "hidden";
+                //displayTimer.innerHTML = "EXPIRED";
+            }
+        }, 1000);
+      }
 
 
 
