@@ -102,6 +102,9 @@
         justify-content: start;
         align-items: center;
       }
+      #parent_div {
+        margin-top: 10px;
+      }
       #url_input,
       #url_button  {
         margin: 0.5em;
@@ -262,6 +265,7 @@
       .add_BMList,
       .close_popup,
       .set_timer,
+      .abort_timer,
       .history_popup,
       .close_hs_popup,
       .openPanel {
@@ -287,6 +291,7 @@
       .add_BMList:hover,
       .close_popup:hover,
       .set_timer:hover,
+      .abort_timer:hover,
       .history_popup:hover,
       .close_hs_popup:hover,
       .openPanel:hover {
@@ -469,7 +474,10 @@
 
       }
       #set_timer {
-        margin-left: 3em;
+        margin-left: 0.5em;
+      }
+      #abort_timer {
+        min-width: 0;
       }
       #timer {
         visibility: hidden;
@@ -733,6 +741,7 @@
       <button class="set_timer" id="set_timer" onclick="setTimer()">Set Timer</button>
       <input type="number" id="minuteTimer" min="0" max="59" step="1" class="text_field" placeholder="MM:">
       <input type="number" id="secondTimer" min="0" max="59" step="1" class="text_field"placeholder="SS:">
+      <button class="abort_timer" id="abort_timer" onclick="abortTimer()">Abort Timer</button>
 
       <!-- //Removed the below button next to Save bookmarks button on 7th April 2024 
       <button class="add_BM" onclick="add_Bookmark()">Add Bookmark</button>
@@ -744,9 +753,10 @@
       <input class="text_field" type="text" id="timepaused" />
       -->
 
+      <h2 id="timer">MM:SS</h2>
       <label id="current_speed"> Current Playback Rate: </label>
       <label id="display_speed"> 1.0 </label>
-      <h2 id="timer">Timer is Here</h2>
+      
     </div>
 <!----------------------------------------------------------------------------->
 
@@ -824,18 +834,13 @@
 
       //Jump button text display--------------------------------------------
       //-- Added on 11th march 2024 v1.9------------------------------------
-      var HJB = document.getElementById("H-jump-back");
-      HJB.innerHTML = jump_backlogo+" -"+huge_Jump+" Sec";
-      var LJB = document.getElementById("L-jump-back");
-      LJB.innerHTML = jump_backlogo+" -"+large_Jump+" Sec";
-      var SJB = document.getElementById("previous");
-      SJB.innerHTML = jump_backlogo+" -"+small_Jump+" Sec";
+      var HJB = document.getElementById("H-jump-back");      
+      var LJB = document.getElementById("L-jump-back");      
+      var SJB = document.getElementById("previous");      
       var SJF = document.getElementById("next");
-      SJF.innerHTML = "+"+small_Jump+" Sec "+jump_frontlogo;
       var LJF = document.getElementById("L-jump-front");
-      LJF.innerHTML = "+"+large_Jump+" Sec "+jump_frontlogo;
       var HJF = document.getElementById("H-jump-front");
-      HJF.innerHTML = "+"+huge_Jump+" Sec "+jump_frontlogo;
+      
       //----------------------------------------------------------------------
       /* 
       var LJB = document.getElementById("L-jump-back");
@@ -1776,7 +1781,7 @@
       mediaQuery.addEventListener('change', function(event) {
         if (event.matches) {
 
-          elementResizeOnARChange();
+          elementResizeOnPortraitAR();
 
           /*
           // Change the text of the button with ID H-jump-back
@@ -1793,24 +1798,46 @@
           document.getElementById('H-jump-front').style.fontSize = textSize;
           */
         }
+        else {
+          elementResizeOnLandscapeAR();
+        }
       });
 
-      function elementResizeOnARChange(){
+      function elementResizeOnPortraitAR(){
 
-        document.getElementById('H-jump-back').innerHTML = '&#8920';   // &#9194
-        document.getElementById('H-jump-back').style.fontSize = textSize;
+        HJB.innerHTML = '&#8920';   // &#9194
+        HJB.style.fontSize = textSize;
         //document.getElementById('L-jump-back').innerHTML = '&#9664';
-        document.getElementById('previous').innerHTML = '&#8810;';   // &#9664
-        document.getElementById('previous').style.fontSize = textSize;
+        SJB.innerHTML = '&#8810;';   // &#9664
+        SJB.style.fontSize = textSize;
 
-        document.getElementById('next').innerHTML = '&#8811';  // &#9654
-        document.getElementById('next').style.fontSize = textSize;
+        SJF.innerHTML = '&#8811';  // &#9654
+        SJF.style.fontSize = textSize;
         //document.getElementById('L-jump-front').innerHTML = '&#9654';
-        document.getElementById('H-jump-front').innerHTML = '&#8921';   //  &#9193
-        document.getElementById('H-jump-front').style.fontSize = textSize;
-        console.log("AR have became less than 1...");
+        HJF.innerHTML = '&#8921';   //  &#9193
+        HJF.style.fontSize = textSize;
+        console.log("AR has became Portrait...");
 
       }
+
+      function elementResizeOnLandscapeAR() {
+        
+        HJB.innerHTML = jump_backlogo+" -"+huge_Jump+" Sec";
+        
+        LJB.innerHTML = jump_backlogo+" -"+large_Jump+" Sec";
+        
+        SJB.innerHTML = jump_backlogo+" -"+small_Jump+" Sec";
+        
+        SJF.innerHTML = "+"+small_Jump+" Sec "+jump_frontlogo;
+
+        LJF.innerHTML = "+"+large_Jump+" Sec "+jump_frontlogo;
+        
+        HJF.innerHTML = "+"+huge_Jump+" Sec "+jump_frontlogo;
+
+        console.log("AR has became Landscape...");
+
+      }
+
       function checkAspectRatio() {
         // Get the viewport width and height
         const width = window.innerWidth;
@@ -1822,12 +1849,14 @@
         // Check the aspect ratio and apply styles
         if (aspectRatio <= 1) {
 
-          elementResizeOnARChange();
-          console.log("AR is Checked...");
+          elementResizeOnPortraitAR();
+          //console.log("AR is Portrait...");
         } 
         else {
           // Apply styles for landscape mode
-          console.log("AR is more than 1");
+
+          elementResizeOnLandscapeAR();
+          //console.log("AR is Landscape...");
         }
       }
 
@@ -1915,18 +1944,19 @@
       */
 
       let timer;
+      var InactivityDialog;
       let isActive = true;
       // User-specified time in milliseconds (e.g., 5 minutes = 300000 ms)
       var inactivityTime = 300000;
-      
-      //var displayTimer = document.getElementById("timer");
+      var t1 = document.getElementById("minuteTimer");
+      var t2 = document.getElementById("secondTimer");
+      var displayTime = document.getElementById("timer");
+      var intervalX;
 
 
       function setTimer(){
+
         isActive = true;
-        var t1 = document.getElementById("minuteTimer");
-        var t2 = document.getElementById("secondTimer");
-        //var t3 = 
         var minute = parseInt(t1.value, 10) || 0;
         var sec = parseInt(t2.value, 10) || 0;
         var t3 = (minute*60 + sec) * 1000;
@@ -1937,6 +1967,7 @@
         }
         inactivityTime = t3;
         console.log("timer set for: "+inactivityTime);
+        clearInterval(intervalX);
         resetTimer();
         //displayTimer();
         //displayTimer(minute,sec);
@@ -1952,7 +1983,7 @@
         //console.log("flag is: "+isActive);
         displayTimer();
         timer = setTimeout(videoHalt, inactivityTime);
-        timer = setTimeout(showInactivityDialog, inactivityTime);
+        InactivityDialog = setTimeout(showInactivityDialog, inactivityTime);
         //player.pauseVideo();
       }
       // Function to show the inactivity dialog
@@ -1985,14 +2016,18 @@
 
       function displayTimer() {
         // Get the user-entered minutes and seconds
-        var minutes = document.getElementById("minuteTimer").value;
-        var seconds = document.getElementById("secondTimer").value;
+        var minutes = t1.value;
+        var seconds = t2.value;
+        //var x;
 
         // Calculate the total countdown time in milliseconds
         var countDownDate = new Date().getTime() + (minutes * 60 * 1000) + (seconds * 1000);
+        displayTime.style.visibility = "visible";
+
+        //clearInterval(intervalX);
 
         // Update the count down every 1 second
-        var x = setInterval(function() {
+        intervalX = setInterval(function() {
 
             // Get today's date and time
             var now = new Date().getTime();
@@ -2005,22 +2040,32 @@
             var seconds = Math.floor((distance % (1000 * 60)) / 1000)+1;
 
             // Display the result in the element with id="timer"
-            var displayTime = document.getElementById("timer");
-            displayTime.style.visibility = "visible";
+            
             displayTime.innerHTML = minutes + "m " + seconds + "s ";
             //displayTimer.style.visibility = "visible";
             //displayTimer.innerHTML = minutes + "m " + seconds + "s ";
 
             // If the count down is finished, write some text
             if (distance < 0) {
-                clearInterval(x);
+                clearInterval(intervalX);
                 //document.getElementById("timer").innerHTML = "EXPIRED";
                 displayTime.style.visibility = "hidden";
                 //displayTimer.innerHTML = "EXPIRED";
             }
         }, 1000);
+
+
       }
 
+      function abortTimer() {
+        clearInterval(intervalX);
+        clearTimeout(timer);
+        clearInterval(InactivityDialog);
+        isActive = false;
+        displayTime.innerHTML = "MM:SS";
+        displayTime.style.visibility = "hidden";
+
+      }
 
 
     </script>
